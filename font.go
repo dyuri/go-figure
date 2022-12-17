@@ -3,6 +3,7 @@ package figure
 import (
 	"bufio"
 	"bytes"
+	"embed"
 	"io"
 	"path"
 	"strings"
@@ -22,6 +23,9 @@ var colors = map[string]string{
 	"white":  "\033[97m",
 }
 
+//go:embed fonts/*
+var FontDir embed.FS
+
 type font struct {
 	name      string
 	height    int
@@ -33,9 +37,15 @@ type font struct {
 
 func newFont(name string) (font font) {
 	font.setName(name)
-	fontBytes, err := Asset(path.Join("fonts", font.name+".flf"))
+	// check for flf font file
+	fontBytes, err := FontDir.ReadFile(path.Join("fonts", font.name+".flf"))
 	if err != nil {
-		panic(err)
+		// check for tlf font file
+		fontBytes, err = FontDir.ReadFile(path.Join("fonts", font.name+".tlf"))
+		if err != nil {
+			// TODO don't panic
+			panic(err)
+		}
 	}
 	fontBytesReader := bytes.NewReader(fontBytes)
 	scanner := bufio.NewScanner(fontBytesReader)
@@ -61,7 +71,7 @@ func (font *font) setName(name string) {
 func (font *font) setAttributes(scanner *bufio.Scanner) {
 	for scanner.Scan() {
 		text := scanner.Text()
-		if strings.HasPrefix(text, signature) {
+		if strings.HasPrefix(text, flfSignature) || strings.HasPrefix(text, tlfSignature) {
 			font.height = getHeight(text)
 			font.baseline = getBaseline(text)
 			font.hardblank = getHardblank(text)

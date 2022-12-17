@@ -5,7 +5,8 @@ import (
 	"strings"
 )
 
-const signature = "flf2"
+const flfSignature = "flf2"
+const tlfSignature = "tlf2"
 const reverseFlag = "1"
 
 var charDelimiters = [3]string{"@", "#", "$"}

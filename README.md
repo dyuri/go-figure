@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.com/common-nighthawk/go-figure.svg?branch=master)](https://travis-ci.com/common-nighthawk/go-figure)
-
 # Go Figure
 
 ## Description
@@ -11,13 +9,13 @@ This package was inspired by the Ruby gem [artii](https://github.com/miketierney
 but built from scratch and with a different feature set.
 
 ## Installation
-`go get github.com/common-nighthawk/go-figure`
+`go get github.com/dyuri/go-figure`
 
 ## Basic Example
 ```go
 package main
 
-import("github.com/common-nighthawk/go-figure")
+import("github.com/dyuri/go-figure")
 
 func main() {
   myFigure := figure.NewFigure("Hello World", "", true)
@@ -60,7 +58,7 @@ func NewFigureWithFont(phrase string, reader io.Reader, strict bool) figure
 ```
 
 `NewFigure` requires only the name of the font, and uses the font file shipped
-with this package stored in bindata.
+with this package stored via `embed`.
 
 If passed an empty string for the font name, a default is provided.
 That is, these are both valid--
@@ -77,12 +75,12 @@ Provide the absolute path to the flf.
 You can point to a file the comes with this project
 or you can store the file anywhere you'd like and use that location.
 
-The font files are available in the [fonts folder](https://github.com/common-nighthawk/go-figure/tree/master/fonts)
+The font files are available in the [fonts folder](https://github.com/dyuri/go-figure/tree/master/fonts)
 and on [figlet.org](http://www.figlet.org/fontdb.cgi).
 
 Here are two examples--
 
-`myFigure := figure.NewFigureWithFont("Foo Bar", "/home/ubuntu/go/src/github.com/common-nighthawk/go-figure/fonts/alphabet.flf", true)`
+`myFigure := figure.NewFigureWithFont("Foo Bar", "/home/ubuntu/go/src/github.com/dyuri/go-figure/fonts/alphabet.flf", true)`
 
 `myFigure := figure.NewFigureWithFont("Foo Bar", "/home/lib/fonts/alaphabet.flf", true)`
 
@@ -266,154 +264,7 @@ returns
 
 
 ## Supported Fonts
-* 3-d
-* 3x5
-* 5lineoblique
-* acrobatic
-* alligator
-* alligator2
-* alphabet
-* avatar
-* banner
-* banner3-D
-* banner3
-* banner4
-* barbwire
-* basic
-* bell
-* big
-* bigchief
-* binary
-* block
-* bubble
-* bulbhead
-* calgphy2
-* caligraphy
-* catwalk
-* chunky
-* coinstak
-* colossal
-* computer
-* contessa
-* contrast
-* cosmic
-* cosmike
-* cricket
-* cursive
-* cyberlarge
-* cybermedium
-* cybersmall
-* diamond
-* digital
-* doh
-* doom
-* dotmatrix
-* drpepper
-* eftichess
-* eftifont
-* eftipiti
-* eftirobot
-* eftitalic
-* eftiwall
-* eftiwater
-* epic
-* fender
-* fourtops
-* fuzzy
-* goofy
-* gothic
-* graffiti
-* hollywood
-* invita
-* isometric1
-* isometric2
-* isometric3
-* isometric4
-* italic
-* ivrit
-* jazmine
-* jerusalem
-* katakana
-* kban
-* larry3d
-* lcd
-* lean
-* letters
-* linux
-* lockergnome
-* madrid
-* marquee
-* maxfour
-* mike
-* mini
-* mirror
-* mnemonic
-* morse
-* moscow
-* nancyj-fancy
-* nancyj-underlined
-* nancyj
-* nipples
-* ntgreek
-* o8
-* ogre
-* pawp
-* peaks
-* pebbles
-* pepper
-* poison
-* puffy
-* pyramid
-* rectangles
-* relief
-* relief2
-* rev
-* roman
-* rot13
-* rounded
-* rowancap
-* rozzo
-* runic
-* runyc
-* sblood
-* script
-* serifcap
-* shadow
-* short
-* slant
-* slide
-* slscript
-* small
-* smisome1
-* smkeyboard
-* smscript
-* smshadow
-* smslant
-* smtengwar
-* speed
-* stampatello
-* standard
-* starwars
-* stellar
-* stop
-* straight
-* tanja
-* tengwar
-* term
-* thick
-* thin
-* threepoint
-* ticks
-* ticksslant
-* tinker-toy
-* tombstone
-* trek
-* tsalagi
-* twopoint
-* univers
-* usaflag
-* wavy
-* weird
+Check the `fonts` folder.
 
 ## Contributing
 Because this project is small, we can dispense with formality.
@@ -427,8 +278,8 @@ Projects with more stars are displayed higher
 in search results when people are looking for packages.
 Also--they make contributors feel good :)
 
-If you are feeling especially generous,
-give a shout to [@cmmn_nighthawk](https://twitter.com/cmmn_nighthawk).
+## Thanks to @common-nighthawk
+Original version: https://github.com/common-nighthawk/go-figure
 
 ## TODO
 * Add proper support for spaces
