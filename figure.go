@@ -1,21 +1,22 @@
 package figure
 
 import (
+	"fmt"
 	"io"
 	"log"
-	"reflect"
 	"strings"
 )
 
-const ascii_offset = 32
-const first_ascii = ' '
-const last_ascii = '~'
+const asciiOffset = 32
+const firstAscii = ' '
+const lastAscii = '~'
+
+type colorizer func(cidx, row int, fragment, text string) string
 
 type figure struct {
-	phrase string
 	font
+	phrase string
 	strict bool
-	color  string
 }
 
 func NewFigure(phrase, fontName string, strict bool) figure {
@@ -23,18 +24,7 @@ func NewFigure(phrase, fontName string, strict bool) figure {
 	if font.reverse {
 		phrase = reverse(phrase)
 	}
-	return figure{phrase: phrase, font: font, strict: strict}
-}
-
-func NewColorFigure(phrase, fontName string, color string, strict bool) figure {
-	color = strings.ToLower(color)
-	if _, found := colors[color]; !found {
-		log.Fatalf("invalid color. must be one of: %s", reflect.ValueOf(colors).MapKeys())
-	}
-
-	fig := NewFigure(phrase, fontName, strict)
-	fig.color = color
-	return fig
+	return figure{font: font, phrase: phrase, strict: strict}
 }
 
 func NewFigureWithFont(phrase string, reader io.Reader, strict bool) figure {
@@ -42,33 +32,59 @@ func NewFigureWithFont(phrase string, reader io.Reader, strict bool) figure {
 	if font.reverse {
 		phrase = reverse(phrase)
 	}
-	return figure{phrase: phrase, font: font, strict: strict}
+	return figure{font: font, phrase: phrase, strict: strict}
 }
 
-func (figure figure) Slicify() (rows []string) {
-	for r := 0; r < figure.font.height; r++ {
+func (figure figure) Slicify(cfun colorizer) (rows []string) {
+	for r := 0; r < figure.height; r++ {
 		printRow := ""
-		for _, char := range figure.phrase {
-			if char < first_ascii || char > last_ascii {
+		for idx, char := range figure.phrase {
+			if char < firstAscii || char > lastAscii {
 				if figure.strict {
+					// TODO err
 					log.Fatal("invalid input.")
 				} else {
 					char = '?'
 				}
 			}
-			fontIndex := char - ascii_offset
-			charRowText := scrub(figure.font.letters[fontIndex][r], figure.font.hardblank)
+			fontIndex := char - asciiOffset
+			charRowText := scrub(figure.letters[fontIndex][r], figure.hardblank)
+			if cfun != nil && strings.ReplaceAll(charRowText, " ", "") != "" {
+				charRowText = cfun(idx, r, charRowText, figure.phrase)
+			}
 			printRow += charRowText
 		}
-		if r < figure.font.baseline || len(strings.TrimSpace(printRow)) > 0 {
+		if r < figure.baseline || len(strings.TrimSpace(printRow)) > 0 {
 			rows = append(rows, strings.TrimRight(printRow, " "))
 		}
 	}
 	return rows
 }
 
+func (fig figure) Print() {
+	for _, printRow := range fig.Slicify(nil) {
+		fmt.Println(printRow)
+	}
+}
+
+func (fig figure) ColorString(cfun colorizer) string {
+	s := ""
+	for _, printRow := range fig.Slicify(cfun) {
+		s += fmt.Sprintf("%s\n", printRow)
+	}
+	return s
+}
+
+func (fig figure) String() string {
+	s := ""
+	for _, printRow := range fig.Slicify(nil) {
+		s += fmt.Sprintf("%s\n", printRow)
+	}
+	return s
+}
+
 func scrub(text string, char byte) string {
-	return strings.Replace(text, string(char), " ", -1)
+	return strings.ReplaceAll(text, string(char), " ")
 }
 
 func reverse(s string) string {

@@ -31,29 +31,39 @@ func main() {
  |_| |_|  \___| |_| |_|  \___/     \_/\_/     \___/  |_|    |_|  \__,_|
 ```
 
-You can also make colorful figures:
+You can also make colorful figures using `colorizer` functions:
 
 ```go
 func main() {
-  myFigure := figure.NewColorFigure("Hello World", "", "green", true)
-  myFigure.Print()
+  myFigure := figure.NewFigure("Hello World", "3d", true)
+  fmt.Print(myFigure.ColorString(figure.FixedColorizer("red"))
 }
 ```
 
+![web](docs/hello_red.png "red hello world")
+
+... or even one with color gradient:
+
+```go
+func main() {
+  myFigure := figure.NewFigure("Hello World", "3d", true)
+  fmt.Print(myFigure.ColorString(figure.GradientRGBColorizer(128, 255, 64, 64, 128, 255))
+}
+```
+
+![web](docs/hello_gradient.png "hello world with color gradient")
+
 ## Documentation
 ### Create a Figure
-There are three ways to create a Figure. These are--
+There are two ways to create a Figure. These are--
 the method `func NewFigure`,
-the method `func NewColorFigure`, and
 the method `func NewFigureWithFont`.
 
 Each constructor takes the arguments: the text, font, and strict mode.
-The "color" constructor takes a color as an additional arg.
 The "with font" specifies the font differently.
 The method signature are:
 ```
 func NewFigure(phrase, fontName string, strict bool) figure
-func NewColorFigure(phrase, fontName string, color string, strict bool) figure
 func NewFigureWithFont(phrase string, reader io.Reader, strict bool) figure
 ```
 
@@ -82,14 +92,7 @@ Here are two examples--
 
 `myFigure := figure.NewFigureWithFont("Foo Bar", "/home/ubuntu/go/src/github.com/dyuri/go-figure/fonts/alphabet.flf", true)`
 
-`myFigure := figure.NewFigureWithFont("Foo Bar", "/home/lib/fonts/alaphabet.flf", true)`
-
-You can also make colorful figures! The current supported colors are:
-blue, cyan, gray, green, purple, red, white, yellow.
-
-An example--
-
-`myFigure := figure.NewColorFigure("Foo Bar", "", "green", true)
+`myFigure := figure.NewFigureWithFont("Foo Bar", "/usr/lib/fonts/alaphabet.flf", true)`
 
 Strict mode dictates how to handle characters outside of standard ASCII.
 When set to true, a non-ASCII character (outside character codes 32-127)
@@ -176,7 +179,7 @@ func landingPage(w http.ResponseWriter, r *http.Request) {
 ```
 
 ### Methods: Misc
-#### Slicify() ([]string)
+#### Slicify(colorizer) ([]string)
 If you want to do something outside of the created methods,
 you can grab the internal slice.
 This gives you a good start to build anything
@@ -185,7 +188,7 @@ with the ASCII art, if manually.
 A figure responds to the func Slicify,
 and will return the slice of strings.
 
-`myFigure.Slicify()`
+`myFigure.Slicify(nil)`
 
 returns
 
@@ -283,6 +286,5 @@ Original version: https://github.com/common-nighthawk/go-figure
 
 ## TODO
 * Add proper support for spaces
-* More animations
 * Implement graceful line-wrapping and smushing
 * Deep-copy font for Dance (current implementation is destructive)
