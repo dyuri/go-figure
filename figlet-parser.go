@@ -29,9 +29,9 @@ func getHardblank(metadata string) byte {
 	hardblank := datum[len(datum)-1]
 	if hardblank == hardblanksBlacklist[0] || hardblank == hardblanksBlacklist[1] {
 		return ' '
-	} else {
-		return hardblank
 	}
+
+	return hardblank
 }
 
 func getReverse(metadata string) bool {

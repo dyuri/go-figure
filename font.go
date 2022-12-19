@@ -11,18 +11,6 @@ import (
 
 const defaultFont = "standard"
 
-var colors = map[string]string{
-	"reset":  "\033[0m",
-	"red":    "\033[31m",
-	"green":  "\033[32m",
-	"yellow": "\033[33m",
-	"blue":   "\033[34m",
-	"purple": "\033[35m",
-	"cyan":   "\033[36m",
-	"gray":   "\033[37m",
-	"white":  "\033[97m",
-}
-
 //go:embed fonts/*
 var FontDir embed.FS
 
@@ -82,7 +70,7 @@ func (font *font) setAttributes(scanner *bufio.Scanner) {
 }
 
 func (font *font) setLetters(scanner *bufio.Scanner) {
-	font.letters = append(font.letters, make([]string, font.height, font.height)) //TODO: set spaces from flf
+	font.letters = append(font.letters, make([]string, font.height)) //TODO: set spaces from flf
 	for i := range font.letters[0] {
 		font.letters[0][i] = "  "
 	} //TODO: set spaces from flf
